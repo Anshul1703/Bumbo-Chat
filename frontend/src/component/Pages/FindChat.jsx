@@ -3,16 +3,15 @@ import { styled } from '@mui/material/styles';
 import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import PropTypes from 'prop-types';
-
 import Radio from '@mui/material/Radio';
-// import { useRadioGroup } from '@mui/material/RadioGroup';
-// import "../../CSS/main.css"
-import "../../CSS/Findchat.css";
 import Box from '@mui/material/Box';
-
 import TextField from '@mui/material/TextField';
-import Input from "@mui/material/Input";
 import Button from "@mui/material/Button";
+import TermsPopup from "./consent/TermCondition";
+import "../../CSS/Findchat.css";
+import Chip from "@mui/material/Chip";
+
+
 
 const CustomRadio = styled((props) => <Radio {...props} />)(({ theme }) => ({
   '&.Mui-checked': {
@@ -60,9 +59,43 @@ MyFormControlLabel.protoTypes = {
 export function FindChat() {
 
   const [matchType, setMatchType] = useState("random");
-
+  const [interests, setInterests] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [popupOpen, setPopupOpen] = useState(false);
   const handleChange = (event) => {
     setMatchType(event.target.value);
+  };
+
+
+  const handleStartChange = () => {
+if(matchType === 'interest' && interests.length === 0 ){
+  alert("Please add at least one interest before starting the chat.")
+}else {
+      setPopupOpen(true);
+    }
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && inputValue.trim() !== '') {
+      if (!interests.includes(inputValue.trim())) {
+        setInterests((prev) => [...prev, inputValue.trim()]);
+      }
+      setInputValue('');
+    }
+  };
+  
+  const handleAgree = () => {
+    setPopupOpen(false);
+    alert("Chat started! ");
+  };
+
+  const handleCancel = () => {
+    setPopupOpen(false);
+  };
+  
+
+    const handleDelete = (interestToDelete) => {
+    setInterests((prev) => prev.filter((item) => item !== interestToDelete));
   };
 
   return (
@@ -84,15 +117,19 @@ export function FindChat() {
               height: '100%',
             }}
           >
-           <RadioGroup name="use-radio-group" value={matchType} onChange={handleChange} >
+           <RadioGroup name="use-radio-group" value={matchType}     onChange={(e) => setMatchType(e.target.value)} >
   <MyFormControlLabel className="label" value="interest" label="Interest Based" control={<CustomRadio />} />
   <MyFormControlLabel className="label" value="random" label="Random" control={<CustomRadio />} />
 </RadioGroup>
 
 <div className="tags-input-container">
 {matchType === "interest" && (
+  <>
   <TextField
+  value={inputValue}
+   onChange={(e) => setInputValue(e.target.value)}
  variant="standard"
+ onKeyDown={handleKeyPress}
     placeholder="Type an interest and press Enter"
     InputProps={{
       style: {
@@ -111,9 +148,34 @@ export function FindChat() {
     }}
     required
   />
+  <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              mt: 2,
+              gap: 1,
+            }}
+          >
+ {interests.map((interest, index) => (
+              <Chip
+                key={index}
+                label={interest}
+                onDelete={() => handleDelete(interest)}
+                sx={{
+                  background: '#C165FF',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                }}
+              />
+            ))}
+          </Box> 
+  
+        </>
 )}
 </div>
 <Button className="start-Button"
+  onClick={handleStartChange}
 sx={{
   border: "1px solid #C165FF",
   color: "#C165FF"}}
@@ -122,7 +184,7 @@ sx={{
         </div>
 </div>
 
-      
+       <TermsPopup open={popupOpen} onAgree={handleAgree} onCancel={handleCancel} />
 
     </>
   )
