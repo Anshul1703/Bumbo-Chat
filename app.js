@@ -433,6 +433,10 @@ function findDifferentInterestMatch(userId, interests) {
     }
     return null;
 }
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 
 // Start server with error handling
 const server = http.listen(PORT, () => {
