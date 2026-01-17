@@ -1,0 +1,20 @@
+
+.MuiDialog-container {
+  backdrop-filter: blur(3px);
+}
+
+.MuiDialog-paper {
+  border-radius: 16px;
+  background-color: #fdfdfd;
+  padding: 16px;
+}
+
+.MuiDialogTitle-root {
+  font-weight: bold;
+  color: #C165FF;
+}
+
+.MuiDialogContentText-root {
+  font-size: 16px;
+  color: #555;
+}
