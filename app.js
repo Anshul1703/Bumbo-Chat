@@ -130,9 +130,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.get('loaderio-d32a1b398e821e062eeacddab44d1e4e.html', (req,res)=>{
-    res.send("hi");
-}
 
 // Health check endpoint with detailed status
 app.get('/health', (req, res) => {
