@@ -259,3 +259,10 @@ socket.on('newPartnerFound', (data) => {
 socket.on('message', (data) => {
     addMessage(data.message, 'received');
 }); 
+// Graceful disconnect when user closes tab or refreshes
+window.addEventListener('beforeunload', () => {
+    if (currentPartner) {
+        socket.emit('disconnectPartner', { partnerId: currentPartner });
+    }
+    socket.disconnect(); // triggers server-side disconnect
+});
